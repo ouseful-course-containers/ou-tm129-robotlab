@@ -1,0 +1,119 @@
+;;
+;;	Installation script for the LEGO USB Tower driver
+;;  LEGO System A/S Electronics R&D Department, Billund DK
+;;
+;;	Copyright (C) 1999-2000 The LEGO Company
+;;  All rights reserved
+;;
+
+[Version]
+Signature="$CHICAGO$"
+Provider=%ProviderName%
+DriverVer=01/21/2004, 1.0.50.0164
+Class=LEGODevices
+ClassGUID={03B3FAA0-00BE-11d4-B2F7-00C04FA4CB5A}
+;CatalogFile=LTower.cat
+
+[ControlFlags]
+; All PnP devices should be excluded from manual AddDevice Applet list
+ExcludeFromSelect=*
+
+[ClassInstall32]
+AddReg = LEGODevicesClass.AddReg
+
+[LEGODevicesClass.AddReg]
+HKR,,Icon,,"1,TowerAPI.dll"
+HKR,,,,%LEGODevicesClassName%
+
+[Manufacturer]
+%MfgName%=DeviceList
+
+[DestinationDirs]
+DefaultDestDir = 11
+LEGOUSBTower.Files.Ext9x  = 10,System32\Drivers
+LEGOUSBTower.Files.Ext    = 10,System32\Drivers
+LEGOUSBTower.Files.Dll  = 11
+LEGOUSBTower.Files.Help = 18
+LEGOUSBTower.Files.Manifest  = 11
+
+[DeviceList]
+%DeviceDesc%=LEGOUSBTower.Device, USB\VID_0694&PID_0001
+
+[DefaultInstall]
+CopyFiles=LEGOUSBTower.Files.Ext, LEGOUSBTower.Files.Dll, LEGOUSBTower.Files.Manifest, LEGOUSBTower.Files.Help
+AddReg=LEGOUSBTower.AddReg
+
+;------------------------------------------------------------------------------
+;  File copy sections
+;------------------------------------------------------------------------------
+
+[LEGOUSBTower.Files.Ext]
+LTower.sys
+
+[LEGOUSBTower.Files.Ext9x]
+LTower9x.sys
+
+[LEGOUSBTower.Files.Dll]
+LTower.cpl
+Towerapi.dll
+
+[LEGOUSBTower.Files.Help]
+LTower.chm
+
+[LEGOUSBTower.Files.Manifest]
+LTower.cpl.manifest
+
+;------------------------------------------------------------------------------
+;  Windows 2000 Sections
+;------------------------------------------------------------------------------
+
+[LEGOUSBTower.Device.NT]
+CopyFiles=LEGOUSBTower.Files.Ext, LEGOUSBTower.Files.Dll, LEGOUSBTower.Files.Help, LEGOUSBTower.Files.Manifest
+
+[LEGOUSBTower.Device.NT.Services]
+AddService = LTower, 2, LEGOUSBTower.AddService
+
+[LEGOUSBTower.AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\LTower.sys
+LoadOrderGroup = Base
+
+;------------------------------------------------------------------------------
+;  Windows 98 Sections
+;------------------------------------------------------------------------------
+
+[LEGOUSBTower.Device]
+CopyFiles=LEGOUSBTower.Files.Ext9x, LEGOUSBTower.Files.Dll, LEGOUSBTower.Files.Help
+AddReg=LEGOUSBTower.AddReg
+
+[LEGOUSBTower.AddReg]
+HKR,,NoSetupUI,,1
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,LTower9x.sys
+
+;------------------------------------------------------------------------------
+;  Source disk files and names
+;------------------------------------------------------------------------------
+
+[SourceDisksFiles]
+LTower.sys = 1
+LTower.cpl = 1
+LTower.cpl.manifest = 1
+Towerapi.dll = 1
+LTower.chm = 1
+
+[SourceDisksNames]
+1 = %USBTowerDiskName%,LTower.sys,,
+
+;---------------------------------------------------------------;
+
+[Strings]
+LEGODevicesClassName="LEGO Devices"
+ProviderName="LEGO System A/S"
+MfgName="LEGO"
+DeviceDesc="LEGO USB Tower"
+SvcDesc="LEGO USB Tower Driver"
+USBTowerDiskName="LEGO MINDSTORMS Robotics Invention System 2.0 installation disc"

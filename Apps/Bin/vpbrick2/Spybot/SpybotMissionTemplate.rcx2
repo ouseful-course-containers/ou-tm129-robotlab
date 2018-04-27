@@ -1,0 +1,176 @@
+program SpybotMissionTemplate
+{
+	#include<Spybot.h>
+	#include<Globals.h>
+	#include<Events.h>
+	#include<Messages.h>
+
+	const cGameWatchers = 0  //TODO: define any number of game watchers
+
+	const cStateOne = 1  //TODO: define any number of named game states
+
+
+//TODO: define user constants, global variables, timer, sounds, LED animations & subroutines here:
+
+
+////////////////////////////////////////////////////
+//User defined subs called by engine ROM:
+
+	sub sInitGame  //called by ROM.MainSub once only, after system initialisation
+	{
+		nGameWatchers = cGameWatchers
+
+		nDisplayMode = cDisplayNothing  //TODO: select display mode
+
+		//TODO: insert user initialisation code here
+	}
+
+
+	sub sGetDisplay(pVar1, pVar2)  //called by ROM.MainSub once per second
+	{
+		//TODO: insert display update code here (may be empty)
+	}
+
+
+	/*
+	sub sPollGameWatcher  //continually polled by ROM.MainSub if nState > cStartState
+	{
+		select nGameWatcher  //nGameWatcher = 0..(nGameWatchers - 1)
+		{
+			//TODO: insert code for each game watcher here
+		}
+	}
+	*/
+
+
+	sub sPollStateWatcher  //continually polled by ROM.MainSub
+	{
+		select nState
+		{
+			when cStartState
+			{
+				select nStateWatcher  //nStateWatcher = 0..(nStateWatchers - 1)
+				{
+					when 0
+					{
+						if nEvents & cBumpEvent <> 0
+						{
+							Goto_Bead(cStateOne)
+						}
+					}
+				}
+			}
+
+			//TODO: insert state specific watcher code here
+		}
+	}
+
+
+	sub sInitState(nState)  //called by ROM.MainSub when engine switches state
+	{
+		select nState
+		{
+			when cStartState
+			{
+				nStateWatchers = 1
+				nStateTargetType = cNothing
+			}
+
+			when cStateOne
+			{
+				nStateWatchers = 0
+				nStateTargetType = cNothing
+				LED[iYellowBlink] = 0
+			}
+
+			//TODO: insert state initialisation code here
+		}
+	}
+
+
+	/*
+	sub sProcessControllerMessage  //called by the ROM controller task when a controller message is received
+	{
+		select nControllerButton  //nControllerButton = cControllerButton1..5 (defined in Spybot.h)
+		{
+			//TODO: handle controller button messages here
+		}
+	}
+	*/
+
+
+	/*
+	sub sProcessBotMessage  //called by ROM.MainSub when an IR message has been received
+	{
+		select nMessage & cMessageCommandMask  //see Messages.h for pre-defined nMessage values
+		{
+			//TODO: handle bot messages here
+		}
+	}
+	*/
+
+
+	/*
+	sub sProcessVLLMessage  //called by ROM.MainSub when a VLL message has been received
+	{
+		select nMessageValue  //nMessageValue = 0..127 (VLL code)
+		{
+			//TODO: handle VLL messages here
+		}
+	}
+	*/
+
+
+	sub sUpdateMetabolism  //called by ROM.MainSub once per second
+	{
+		//TODO: insert any metabolic code here (may be empty)
+	}
+
+
+	sub sBumpAction  //called by the ROM bumper watcher task
+	{
+		//TODO: insert code to handle bump events here (may be empty)
+	}
+
+////////////////////////////////////////////////////
+
+	main
+	{
+		MainSub  //start Spybot ROM engine
+	}
+
+////////////////////////////////////////////////////
+
+	task cStateBeadTask
+	{
+		priority cStateBeadTaskPriority
+
+		forever
+		{
+			select nState
+			{
+				when cStateOne
+				{
+					select nZone  //nZone=cAnywhere..cHere
+					{
+						//TODO: insert state & zone specific actions:
+						when cHere
+						{
+							//TODO
+						}
+						when cThere
+						{
+							//TODO
+						}
+						when cAnywhere
+						{
+							PlaySound_Bead(sndFireLaser, 500)
+						}
+					}
+				}
+
+				//TODO: insert other state actions here
+			}
+		}
+	}
+}

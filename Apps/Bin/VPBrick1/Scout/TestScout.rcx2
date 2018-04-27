@@ -1,0 +1,12 @@
+program TestScout {
+  #include"Scout.h"
+  main {
+    forever {
+      select random 1 {
+        when 0 { sound sSweepDown }
+        when 1 { sound sSweepUp }
+      }
+      wait 80
+    }
+  }
+}

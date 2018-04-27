@@ -1,0 +1,246 @@
+program SpybotMissionDemo
+{
+	#include<Spybot.h>
+	#include<Globals.h>
+	#include<Events.h>
+	#include<Messages.h>
+
+	const cGameWatchers = 1
+
+	const cStateRun = 1
+	const cStateRest = 2
+
+//User defined mission globals:
+
+	const gc_BumpsToWin = 3
+	const gc_GameTimeLimit = 120  //seconds
+	const gc_BumpRecoverTime = 3  //seconds
+
+	var gv_Bumps
+	var gv_Display
+
+////////////////////////////////////////////////////
+//User defined sounds & LED animations:
+
+	fx sndMissionStart
+	{
+		tone 659 for 15 wait 5
+		tone 659 for 15 wait 5
+		tone 659 for 15 wait 5
+		tone 494 for 45
+	}
+
+////////////////////////////////////////////////////
+//User defined bead subroutine:
+
+	sub AdvanceForever_Bead
+	{
+		EnterBead
+
+		monitor ExitBeadEvent
+		{
+			forever
+			{
+				try
+				{
+					forward [left right]
+
+					select target[iDirection]
+					{
+						when cLeft { on right off left }
+
+						when cLeftOfCentre { on right float left }
+
+						when cCentre { on [left right] }
+
+						when cRightOfCentre { on left float right }
+
+						when cRight { on left off right }
+					}
+				} retry on fail
+			}
+		} abort on event
+
+		try { float [left right] } abort on fail
+
+		ExitBead
+	}
+
+////////////////////////////////////////////////////
+//User defined subs called by engine ROM:
+
+	sub sInitGame
+	{
+		nGameWatchers = cGameWatchers
+		nDisplayMode = cDisplayOneVar
+		gv_Bumps = 0
+		Set_Bead(SetRCDisable,1)  //RC disabled - this bot is autonomous
+	}
+
+
+	sub sGetDisplay(pVar1, pVar2)
+	{
+		gv_Display = tGameTimer
+		gv_Display /= (gc_GameTimeLimit * 10) / 6
+		gv_Display *= -1
+		gv_Display += 6
+		gv_Display *= cMax / 6
+		pVar1 =  @gv_Display
+	}
+
+
+	sub sPollGameWatcher
+	{
+		select nGameWatcher
+		{
+			when 0
+			{
+				if tGameTimer > gc_GameTimeLimit * 10  //lost
+				{
+					nDisplayMode = cDisplayNothing
+					LED[iDisplay] = 0
+					repeat 3
+					{
+						PlaySound_Bead(sndTrillDown,100)
+					}
+					Set_Bead(SetRCDisable,0)
+					Goto_Bead(cGameOverState)
+				}
+			}
+		}
+	}
+
+
+	sub sPollStateWatcher
+	{
+		select nState
+		{
+			when cStartState
+			{
+				select nStateWatcher
+				{
+					when 0
+					{
+						if nEvents & cBumpEvent <> 0
+						{
+							PlaySound_Bead(sndMissionStart,100)
+							Goto_Bead(cStateRun)
+						}
+					}
+				}
+			}
+
+			when cStateRest
+			{
+				select nStateWatcher
+				{
+					when 0
+					{
+						if tStateTimer > gc_BumpRecoverTime * 10  //recover from bump
+						{
+							Goto_Bead(cStateRun)
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	sub sInitState(nState)
+	{
+		select nState
+		{
+			when cStartState
+			{
+				nStateWatchers = 1
+				nStateTargetType = cNothing
+			}
+
+			when cStateRun
+			{
+				nStateWatchers = 0
+				nStateTargetType = cAnything
+				LED[iYellowWarn] = 0
+				LED[iYellowBlink] = 0
+			}
+
+			when cStateRest
+			{
+				nStateWatchers = 1
+				nStateTargetType = cNothing
+				LED[iYellowBlink] = 1
+				LED[iYellowBlinkInterval] = 10
+			}
+		}
+	}
+
+
+	sub sBumpAction
+	{
+		if target[iRange] = cHere
+		{
+			PlaySound_Bead(sndOuch,50)
+			gv_Bumps += 1
+
+			if gv_Bumps = gc_BumpsToWin  //won
+			{
+				nDisplayMode = cDisplayNothing
+				Action_Bead(sndTrillUp,ledSparkle,moveDance,2,240)
+				Set_Bead(SetRCDisable,0)
+				Goto_Bead(cGameOverState)
+			}
+			else
+			{
+				Goto_Bead(cStateRest)
+			}
+		}
+	}
+
+////////////////////////////////////////////////////
+
+	main
+	{
+		MainSub  //start Spybot ROM engine
+	}
+
+////////////////////////////////////////////////////
+
+	task cStateBeadTask
+	{
+		priority cStateBeadTaskPriority
+
+		forever
+		{
+			select nState
+			{
+				when cStateRun
+				{
+					select nZone
+					{
+						when cHere
+						{
+							AdvanceForever_Bead
+						}
+						when cThere
+						{
+							AdvanceForever_Bead
+							BasicMovement_Bead(moveForward,50)
+						}
+						when cAnywhere
+						{
+							FancyMovement_Bead(moveScan,1,200)
+							BasicMovement_Bead(moveForward,50)
+						}
+					}
+				}
+
+				when cStateRest
+				{
+					PlayTone_Bead(880)
+					Wait_Bead(250)
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,67 @@
+program Avoider {
+  #include <SCOUT.h>
+  #include <SCOUTMLT.h>
+
+  const BACKTIME = 100	// 1 second
+  const TURNTIME = 50	// 0.5 second
+  const DANCETIME = 10	// 0.1 second
+  const AVOIDLIMIT = 4
+  const TICKTIME = 10	// 1 second
+
+  sensor LeftTouch on 1
+  sensor RightTouch on 2
+  counter AvoidCount = 0
+  timer Timer1
+
+  event LeftPressed when LeftTouch.pressed
+  event RightPressed when RightTouch.pressed
+  event DontBugMe when AvoidCount > AVOIDLIMIT
+  event Tick when Timer1 = 10   // 1 second
+
+  main {
+//    bbs_GlobalReset([A B C])
+    priority 8
+    clear Timer1
+    start Heartbeat
+    start AvoidTouch
+    start TooMuch
+ //   display AvoidCount
+    try {
+    forever { bb_Forward(A,B,1000) }
+    } retry on fail
+  }
+
+  watcher AvoidTouch monitor LeftPressed, RightPressed {
+    priority 3
+    AvoidCount += 1
+    try {
+      if LeftPressed { 
+        sound 3
+        bb_Backward(A, B, BACKTIME) 
+        bb_SpinLeft(A, B, TURNTIME) 
+      } else {
+        sound 4
+        bb_Backward(A, B, BACKTIME) 
+        bb_SpinRight(A, B, TURNTIME) 
+      }
+    } stop on fail
+  } restart on event
+
+  watcher TooMuch monitor DontBugMe {
+    priority 2
+    clear AvoidCount
+    try {
+      sound 6
+      sound 6
+      bb_Dance(A, B, 5, DANCETIME)
+      } stop on fail
+  } restart on event
+
+  watcher Heartbeat monitor Tick {
+    priority 7
+    clear Timer1
+    try {
+      tone 36 for 5 wait 10 tone 36 for 5
+    } stop on fail
+  } restart on event
+}

@@ -1,0 +1,25 @@
+T395 NEURAL NET DATA
+
+Number of data pairs and training cycles:
+4 0
+
+Number of nodes in each layer:
+2 1 0 0
+
+Training 'label'(status), inputs, outputs:
+''(T)
+0 0 
+0 
+
+''(T)
+0 1 
+1 
+
+''(T)
+1 0 
+1 
+
+''(T)
+1 1 
+1 
+

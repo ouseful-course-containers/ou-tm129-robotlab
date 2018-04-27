@@ -1,0 +1,18 @@
+program Test
+{
+	#include<Spybot.h>
+
+	main
+	{
+		forever
+		{
+			tone 440 for 2
+			LED[iDisplay] = cRed2
+			wait 20
+
+			tone 880 for 2
+			LED[iDisplay] = cGreen2
+			wait 20
+		}
+	}
+}

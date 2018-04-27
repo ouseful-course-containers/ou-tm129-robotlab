@@ -1,0 +1,9 @@
+program TestRCX2 {
+  #include"RCX2.h"
+  main {
+    forever {
+      tone 10 * random 20 to 40 for 10
+      wait 5
+    }
+  }
+}
