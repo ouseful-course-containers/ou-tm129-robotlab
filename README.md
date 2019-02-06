@@ -1,6 +1,9 @@
 # ou-tm129-robotlab
 VNC container running OU RobotLab under wine.
 
+About: [
+DIT4C Inspired RobotLab Container](https://blog.ouseful.info/2018/04/27/dit4c-inspired-robotlab-container/)
+
 To use this image:
 
 - download and install Docker;
