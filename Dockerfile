@@ -1,31 +1,33 @@
-#Base container
-FROM dit4c/dit4c-container-x11:debian
+FROM danielguerra/ubuntu-xrdp
 
-#Required in order to add backports repo
-RUN apt-get update && apt-get install -y software-properties-common 
+#Required to add repo
+RUN apt-get update && apt-get install -y software-properties-common
+
 
 RUN dpkg --add-architecture i386
-RUN echo "deb http://httpredir.debian.org/debian jessie-backports main" | sudo tee /etc/apt/sources.list.d/docker.list
-RUN apt-get update && apt-get install -y -t jessie-backports wine
+
+RUN wget -nc https://dl.winehq.org/wine-builds/winehq.key
+RUN apt-key add winehq.key
+RUN apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
+RUN apt update && apt-get install -y --install-recommends winehq-stable
 
 
-# /var contains HTML site for container homepage
-COPY var /var
+#Not sure these are the correct versions?
+#Thet do't run properly, and wine still wants to run its own downloads
+#RUN wget http://dl.winehq.org/wine/wine-mono/4.8.1/wine-mono-4.8.1.msi
+#RUN wget http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
+#RUN wget http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
+#RUN wine msiexec /i wine_gecko-2.47-x86_64.msi
+#RUN wine msiexec /i wine_gecko-2.47-x86.msi
+#RUN wine msiexec /i wine-mono-4.8.1.msi
 
-# RobotLab windows files
-COPY Apps/ /opt/Apps
 
-# profile.d environment vars
-COPY etc /etc
+COPY Apps/  /opt/Apps
 
-# Desktop shortcuts and application icons
 COPY usr /usr
 RUN chmod +x /usr/share/applications/robotlab.desktop
 RUN chmod +x /usr/share/applications/neural.desktop
 
-#Add items to top toolrail on desktop
-RUN LNUM=$(sed -n '/launcher_item_app/=' /etc/tint2/panel.tint2rc | head -1) && \
-  sed -i "${LNUM}ilauncher_item_app = /usr/share/applications/robotlab.desktop" /etc/tint2/panel.tint2rc && \
-sed -i "${LNUM}ilauncher_item_app = /usr/share/applications/neural.desktop" /etc/tint2/panel.tint2rc
-
-
+## profile.d environment vars
+#These were required for dit4c; what happens in this case with / without this?
+#COPY etc /etc
