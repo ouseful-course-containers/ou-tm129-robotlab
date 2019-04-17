@@ -91,8 +91,8 @@ CMD xpra start --bind-tcp=0.0.0.0:10000 --html=on  --exit-with-children --daemon
 
 
 #Example image pushed as 
-#docker build -t testjrobotlabx .
+#docker build -t ousefuldemos/tm129robotics-xpra-html5 .
 #Default runs robotlab
-#docker run --name tm129x --shm-size 1g -p 3395:10000 -d testjrobotlabx
-#docker run --name tm129x --shm-size 1g -p 3395:10000 -e start=robotlab -d testjrobotlabx
-#docker run --name tm129x --shm-size 1g -p 3395:10000 -e start=neural -d testjrobotlabx
+#docker run --name tm129x --shm-size 1g -p 3395:10000 -d ousefuldemos/tm129robotics-xpra-html5
+#docker run --name tm129x --shm-size 1g -p 3395:10000 -e start=robotlab -d ousefuldemos/tm129robotics-xpra-html5
+#docker run --name tm129x --shm-size 1g -p 3395:10000 -e start=neural -d ousefuldemos/tm129robotics-xpra-html5
