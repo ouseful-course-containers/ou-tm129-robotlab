@@ -1,30 +1,67 @@
-FROM danielguerra/ubuntu-xrdp
+#FROM lanrat/docker-xpra-html5
+
+#The following is built on ubuntu:bionic
+#https://github.com/ouseful-backup/docker-xpra-html5
+FROM ousefuldemos/docker-xpra-html5
+
+USER root
 
 #Required to add repo
-RUN apt-get update && apt-get install -y software-properties-common
+RUN apt-get update && apt-get install -y software-properties-common wget
 
 
 RUN dpkg --add-architecture i386
 
-RUN wget -nc https://dl.winehq.org/wine-builds/winehq.key
-RUN apt-key add winehq.key
-RUN apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
+RUN wget -qO- https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
+RUN apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
 RUN apt update && apt-get install -y --install-recommends winehq-stable
 
 
 #Not sure these are the correct versions?
 #These don't run properly, and wine still wants to run its own downloads
-#RUN wget http://dl.winehq.org/wine/wine-mono/4.8.1/wine-mono-4.8.1.msi
-#RUN wget http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
-#RUN wget http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
-#RUN wine msiexec /i wine_gecko-2.47-x86_64.msi
-#RUN wine msiexec /i wine_gecko-2.47-x86.msi
-#RUN wine msiexec /i wine-mono-4.8.1.msi
+RUN mkdir -p /home/user/.cache/wine
+RUN wget http://dl.winehq.org/wine/wine-mono/4.8.1/wine-mono-4.8.1.msi -O /home/user/.cache/wine/wine-mono-4.8.1.msi
+RUN wget http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi -O /home/user/.cache/wine/wine_gecko-2.47-x86.msi
+RUN wget http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi -O /home/user/.cache/wine/wine_gecko-2.47-x86_64.msi
+
+USER user
+RUN wine msiexec /i /home/user/.cache/wine/wine_gecko-2.47-x86_64.msi
+RUN wine msiexec /i /home/user/.cache/wine/wine_gecko-2.47-x86.msi
+RUN wine msiexec /i /home/user/.cache/wine/wine-mono-4.8.1.msi
+USER root
+
+#Use the recipe in https://blog.ouseful.info/2019/03/11/running-microsoft-vs-code-remotely-xpra-and-rdp/
+#for starting with RobotLab
+
+COPY Apps/  /opt/Apps
+
+#COPY usr /usr
+#RUN chmod +x /usr/share/applications/robotlab.desktop
+#RUN chmod +x /usr/share/applications/neural.desktop
+
+## profile.d environment vars
+#These were required for dit4c; what happens in this case with / without this?
+#COPY etc /etc
+
+ADD robotlab.sh /usr/local/bin/robotlab
+RUN chmod +x /usr/local/bin/robotlab
+
+ADD neural.sh /usr/local/bin/neural
+RUN chmod +x /usr/local/bin/neural
+
+#Pulseaudio also has a switch in cmd
+#Can't get this working atm...
+#RUN apt-get install -y pulseaudio
 
 #For Jupyter
-RUN apt-get update && apt-get install -y python3.6 python3-pip
+#RUN apt-get update && apt-get install -y python3.6 python3-pip
 
-RUN pip3 install --no-cache notebook jupyter-server-proxy
+
+#Go back to user...
+USER user
+
+
+#RUN pip3 install --no-cache notebook jupyter-server-proxy
 
 # For Binderhub - create user with a home directory
 #Without Binderhub set defaults here?
@@ -47,18 +84,15 @@ RUN pip3 install --no-cache notebook jupyter-server-proxy
 # Use a Jupyter CMD to start the container
 
 
-COPY Apps/  /opt/Apps
+ENV start robotlab
 
-COPY usr /usr
-RUN chmod +x /usr/share/applications/robotlab.desktop
-RUN chmod +x /usr/share/applications/neural.desktop
+#Start with robotlab
+CMD xpra start --bind-tcp=0.0.0.0:10000 --html=on  --exit-with-children --daemon=no --xvfb="/usr/bin/Xvfb +extension Composite -screen 0 1920x1080x24+32 -nolisten tcp -noreset" --pulseaudio=no --notifications=no --bell=no --start-child=${start}
 
 
-#TO DO - this is RDP NOT novnc... need a novnc for Binder?
-## profile.d environment vars
-#These were required for dit4c; what happens in this case with / without this?
-#COPY etc /etc
-
-#docker build -t testjrobotlab .
-#docker run  --name tm129  --shm-size 1g -p 3391:3389 -d testjrobotlab
- 
+#Example image pushed as 
+#docker build -t testjrobotlabx .
+#Default runs robotlab
+#docker run --name tm129x --shm-size 1g -p 3395:10000 -d testjrobotlabx
+#docker run --name tm129x --shm-size 1g -p 3395:10000 -e start=robotlab -d testjrobotlabx
+#docker run --name tm129x --shm-size 1g -p 3395:10000 -e start=neural -d testjrobotlabx
