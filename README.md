@@ -1,6 +1,8 @@
 # ou-tm129-robotlab
 VNC container running OU RobotLab under wine.
 
+Includes styled homepage and file uploader. *But* the container it's based on it rather dated...
+
 About: [
 DIT4C Inspired RobotLab Container](https://blog.ouseful.info/2018/04/27/dit4c-inspired-robotlab-container/)
 
