@@ -5,7 +5,9 @@ FROM dit4c/dit4c-container-x11:debian
 RUN apt-get update && apt-get install -y software-properties-common 
 
 RUN dpkg --add-architecture i386
-RUN echo "deb http://httpredir.debian.org/debian jessie-backports main" | sudo tee /etc/apt/sources.list.d/docker.list
+#https://unix.stackexchange.com/questions/508724/failed-to-fetch-jessie-backports-repository
+#RUN echo "deb http://httpredir.debian.org/debian jessie-backports main" | sudo tee /etc/apt/sources.list.d/docker.list
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main " | sudo tee /etc/apt/sources.list.d/docker.list
 RUN apt-get update && apt-get install -y -t jessie-backports wine
 
 
