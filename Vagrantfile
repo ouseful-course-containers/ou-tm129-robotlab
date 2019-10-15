@@ -1,7 +1,5 @@
 #Vagrantfile for installing VM from vagrantcloud
 
-# Audio support: audio support must also be enabled from the gutter toolbar on the VM
-# once the Virtualbox GUI is running.
 
 Vagrant.configure("2") do |config|
 	
