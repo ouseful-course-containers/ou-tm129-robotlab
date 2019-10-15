@@ -1,6 +1,5 @@
 #Vagrantfile for installing VM from vagrantcloud
 
-
 Vagrant.configure("2") do |config|
 	
 
@@ -35,9 +34,7 @@ Vagrant.configure("2") do |config|
         elsif RUBY_PLATFORM =~ /mingw|mswin|bccwin|cygwin|emx/
             virtualbox.customize ["modifyvm", :id, '--audio', 'dsound', '--audiocontroller', 'ac97']
         end
-            
-        config.vm.provision "shell", inline: "alsactl init", run: 'always'
-
+        
         #Copy and paste
         virtualbox.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
         
