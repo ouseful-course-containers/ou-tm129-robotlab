@@ -4,11 +4,6 @@
 Vagrant.configure("2") do |config|
 	
 
-	#grub problem appears to be getting worse and spreading...
-    #config.vm.provision :shell, :inline => <<-SH
-    #	apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y -o DPkg::options::="--force-confdef" -o DPkg::options::="--force-confold" install grub-pc
-	#SH
-
 #------------------------- PROVIDER: VIRTUALBOX (BUILD) ------------------------------
 
 config.vm.provider :virtualbox do |virtualbox|
@@ -53,7 +48,10 @@ end
   	#Add build scripts here
   	cd /vagrant
   	source ./base.sh
-    source ./monolithic_build.sh
+	source ./monolithic_build.sh
+	source ./basedesktop.sh
+	source ./tm129apps.sh
+
   SH
   
   #https://stackoverflow.com/a/34975635/454773

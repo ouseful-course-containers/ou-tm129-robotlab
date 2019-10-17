@@ -16,6 +16,6 @@ vagrant up
 vagrant package --output tm129robotlab.box
 
 vagrant cloud auth login
-vagrant cloud publish ouseful/robotlab_test 0.0.1 virtualbox tm129robotlab.box -d "Linux desktop running TM129 RobotLab and Neural apps under wine" --version-description "First attempt; apps in /opt/apps" --release --short-description "TM129 RobotLab/Neural under wine on Linux desktop"
+vagrant cloud publish ouseful/robotlab_test 0.0.2 virtualbox tm129robotlab.box -d "Linux desktop running TM129 RobotLab and Neural apps under wine" --version-description "Second attempt; apps via desktop shortcuts" --release --short-description "TM129 RobotLab/Neural under wine on Linux desktop"
 
 ```

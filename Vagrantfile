@@ -9,13 +9,14 @@ Vagrant.configure("2") do |config|
     
 
         #config.vm.box = "bento/ubuntu-16.04"	
-        config.vm.box = "ouseful/robotlab_test"
+        #config.vm.box = "ouseful/robotlab_test"
         
         #Stick with the default key
         config.ssh.insert_key=false
         
         #For local testing:
-        #config.vm.box_url = "./package.box"
+        config.vm.box = "robotlab_test2"
+        config.vm.box_url = "./tm129robotlab.box"
         
         config.vm.hostname = "tm129robotlab-test"
 
@@ -26,6 +27,10 @@ Vagrant.configure("2") do |config|
         virtualbox.memory = 1024
         #virtualbox.cpus = 1 
         virtualbox.gui = true
+
+        config.vm.synced_folder ".", "/vagrant", disabled: true
+        config.vm.synced_folder ".", "/home/vagrant/Desktop/share", owner: "vagrant"
+        
 
         #Audio
         #https://github.com/GeoffreyPlitt/vagrant-audio/blob/master/Vagrantfile
