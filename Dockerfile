@@ -20,6 +20,9 @@ RUN apt update && apt-get install -y --install-recommends winehq-stable
 #Not sure these are the correct versions?
 #These don't run properly, and wine still wants to run its own downloads
 RUN mkdir -p /home/user/.cache/wine
+RUN mkdir -p /home/user/.wine
+RUN chown -R user /home/user
+
 RUN wget http://dl.winehq.org/wine/wine-mono/4.8.1/wine-mono-4.8.1.msi -O /home/user/.cache/wine/wine-mono-4.8.1.msi
 RUN wget http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi -O /home/user/.cache/wine/wine_gecko-2.47-x86.msi
 RUN wget http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi -O /home/user/.cache/wine/wine_gecko-2.47-x86_64.msi
@@ -28,6 +31,7 @@ USER user
 RUN wine msiexec /i /home/user/.cache/wine/wine_gecko-2.47-x86_64.msi
 RUN wine msiexec /i /home/user/.cache/wine/wine_gecko-2.47-x86.msi
 RUN wine msiexec /i /home/user/.cache/wine/wine-mono-4.8.1.msi
+
 USER root
 
 #Use the recipe in https://blog.ouseful.info/2019/03/11/running-microsoft-vs-code-remotely-xpra-and-rdp/
@@ -54,12 +58,19 @@ RUN chmod +x /usr/local/bin/neural
 #RUN apt-get install -y pulseaudio
 
 #For Jupyter
-#RUN apt-get update && apt-get install -y python3.6 python3-pip
+#Tha ARG should be at the top of the Dockerfile...
+#The non-interactive stops thigs like tzdata prompting for a locale
+ARG DEBIAN_FRONTEND=noninteractive
 
+RUN apt-get update && apt-get install -y python3.7 python3-pip
+
+RUN apt-get update && apt-get install -y jupyter && apt-get clean
+RUN pip3 install jupyter-server-proxy
+RUN jupyter serverextension enable --sys-prefix jupyter_server_proxy
 
 #Go back to user...
 USER user
-
+RUN mkdir -p /home/user/notebooks
 
 #RUN pip3 install --no-cache notebook jupyter-server-proxy
 
@@ -87,8 +98,20 @@ USER user
 ENV start robotlab
 
 #Start with robotlab
-CMD xpra start --bind-tcp=0.0.0.0:10000 --html=on  --exit-with-children --daemon=no --xvfb="/usr/bin/Xvfb +extension Composite -screen 0 1920x1080x24+32 -nolisten tcp -noreset" --pulseaudio=no --notifications=no --bell=no --start-child=${start}
+#CMD xpra start --bind-tcp=0.0.0.0:10000 --html=on  --exit-with-children --daemon=no --xvfb="/usr/bin/Xvfb +extension Composite -screen 0 1920x1080x24+32 -nolisten tcp -noreset" --pulseaudio=no --notifications=no --bell=no --start-child=${start}
+EXPOSE 10000 
+EXPOSE 10001
+EXPOSE 8888
 
+USER root
+RUN apt-get -y install supervisor
+#RUN pip3 install supervisor
+RUN mkdir -p /var/log/supervisor
+
+#USER user
+COPY etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]
 
 #Example image pushed as 
 #docker build -t ousefuldemos/tm129robotics-xpra-html5 .
