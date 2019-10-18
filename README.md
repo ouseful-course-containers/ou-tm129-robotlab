@@ -2,6 +2,13 @@
 
 Build on a Linux desktop under `vagrant`.
 
+### Run from VagrantCLoud
+
+Install `Virtualbox` and `vagrant`.
+Download the `Vagrantfile.user` file and save it as `Vagrantfile`.
+In the same directory, run: `vagrant up` -  it should launch Virtualbox with a desktop GUI from which you can run `RobotLab` and `Neural`.
+
+If you need credentials, there is a *sudoers* account with username `vagrant` and password `vagrant`.
 
 
 ### Build, Package and Publish Process
