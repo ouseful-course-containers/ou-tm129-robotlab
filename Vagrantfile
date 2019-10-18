@@ -9,14 +9,14 @@ Vagrant.configure("2") do |config|
     
 
         #config.vm.box = "bento/ubuntu-16.04"	
-        #config.vm.box = "ouseful/robotlab_test"
+        config.vm.box = "ouseful/robotlab_test"
         
         #Stick with the default key
         config.ssh.insert_key=false
         
         #For local testing:
-        config.vm.box = "robotlab_test2"
-        config.vm.box_url = "./tm129robotlab.box"
+        #config.vm.box = "robotlab_test2"
+        #config.vm.box_url = "./tm129robotlab.box"
         
         config.vm.hostname = "tm129robotlab-test"
 
