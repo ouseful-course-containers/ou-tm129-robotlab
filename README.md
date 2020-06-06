@@ -1,6 +1,6 @@
 # TM129 Original RobotLab desktop
 
-Uses Jupyter Desktop Server + Wine
+Uses Jupyter Desktop Server + Wine to run a legacy Windows desktop application on a Linux desktop under Wine.
 
 Launch into desktop: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ouseful-course-containers/ou-tm129-robotlab/master?urlpath=desktop)
 
