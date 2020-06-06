@@ -3,7 +3,7 @@
 Version=1.0
 Type=Application
 Terminal=false
-Icon=/usr/share/icons/hicolor/48x48/apps/NEURAL.png
+Icon=//home/jovyan/Apps/icons/hicolor/48x48/apps/NEURAL.png
 Name=Neural
-Exec=wine /opt/Apps/Neural/neural.exe
+Exec=wine /home/jovyan/Apps/Neural/neural.exe
 Comment=Neural launcher

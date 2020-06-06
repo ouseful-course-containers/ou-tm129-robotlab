@@ -3,7 +3,7 @@
 Version=1.0
 Type=Application
 Terminal=false
-Icon=/usr/share/icons/hicolor/48x48/apps/robotlab.png
+Icon=/home/jovtan/Apps/icons/hicolor/48x48/apps/robotlab.png
 Name=RobotLab
-Exec=wine /opt/Apps/RobotLab/RobotLab.exe
+Exec=wine /home/jovyan/Apps/RobotLab/RobotLab.exe
 Comment=RobotLab launcher

@@ -1,1 +1,0 @@
-export WINEDLLOVERRIDES="mscoree,mshtml="
