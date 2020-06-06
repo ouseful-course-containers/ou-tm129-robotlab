@@ -1,10 +1,12 @@
-# Jupyter Desktop Server + Wine
+# TM129 Original RobotLab desktop
 
-Launch into desktop: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ouseful-demos/jupyter-desktop-server/robotlab?urlpath=desktop)
+Uses Jupyter Desktop Server + Wine
 
-Launch into JupyterLab: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ouseful-demos/jupyter-desktop-server/robotlab?urlpath=lab)
+Launch into desktop: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ouseful-course-containers/ou-tm129-robotlab/master?urlpath=desktop)
 
-Launch into notebook: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ouseful-demos/jupyter-desktop-server/robotlab)
+Launch into JupyterLab: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ouseful-course-containers/ou-tm129-robotlab/master?urlpath=lab)
+
+Launch into notebook: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ouseful-course-containers/ou-tm129-robotlab/master)
 
 
 Run XFCE (or other desktop environments) on a JupyterHub; demo includes running a Windows desktop application under Wine.
