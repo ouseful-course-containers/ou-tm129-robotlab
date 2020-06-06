@@ -23,15 +23,22 @@ RUN xargs apt-get install -y < apt.txt \
 
 USER ${NB_USER}
 
+COPY setup.py setup.py
+COPY MANIFEST.in MANIFEST.in
+COPY jupyter_desktop/ jupyter_desktop/
 COPY Desktop/ Desktop/
 COPY Apps/ Apps/
-RUN pip install websockify && pip install git+https://github.com/yuvipanda/jupyter-desktop-server.git
+COPY environment.yml  environment.yml
 
 USER root
 RUN chmod +x Desktop/robotlab.sh
 RUN chmod +x Desktop/neural.sh
 
 USER ${NB_USER}
+RUN conda env update --name base --file environment.yml
+## conda info --envs
+#RUN conda env update --name notebook --file environment.yml
+#RUN conda activate myenv
 
 RUN pip install jupyterlab_iframe
 RUN jupyter labextension install jupyterlab_iframe

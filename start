@@ -1,0 +1,12 @@
+#!/bin/bash
+set -eux
+
+
+export WINEDLLOVERRIDES="mscoree,mshtml="
+
+#wine msiexec /i /home/jovyan/.cache/wine/wine_gecko-2.47-x86_64.msi
+#wine msiexec /i /home/jovyan/.cache/wine/wine_gecko-2.47-x86.msi
+#wine msiexec /i /home/jovyan/.cache/wine/wine-mono-4.8.1.msi
+
+
+exec "$@"

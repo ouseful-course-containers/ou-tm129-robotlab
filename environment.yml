@@ -1,0 +1,6 @@
+channels:
+  - manics
+dependencies:
+  - websockify
+  - pip:
+    - .
