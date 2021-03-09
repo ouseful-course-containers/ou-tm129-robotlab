@@ -1,6 +1,6 @@
 Example of container that runs XPRA and that can run *RobotLab* or *Neural*.
 
-By default, it will start onto *RobotLab*:
+By default, it will start onto *RobotLab* (visit *localhost:3395* in your browser when the container is running):
 
 - `docker run --name tm129x --shm-size 1g -p 3395:10000 -d ousefuldemos/tm129robotics-xpra-html5`
 - `docker run --name tm129x --shm-size 1g -p 3395:10000 -e start=robotlab -d ousefuldemos/tm129robotics-xpra-html5`
